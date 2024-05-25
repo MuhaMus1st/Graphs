@@ -1,16 +1,28 @@
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Vertex v1 = new Vertex("A");
+        Vertex v2 = new Vertex("B");
+        Vertex v3 = new Vertex("C");
+        Vertex v4 = new Vertex("D");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        WeightedGraph graph = new WeightedGraph();
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+
+        graph.addEdge(v1, v2, 1);
+        graph.addEdge(v2, v3, 2);
+        graph.addEdge(v3, v4, 3);
+        graph.addEdge(v1, v4, 10);
+
+        System.out.println("Breadth First Search:");
+        BreadthFirstSearch bfs = new BreadthFirstSearch(graph, v1);
+        System.out.println("Path from A to D: " + bfs.pathTo(v4));
+
+        System.out.println("Dijkstra's Search:");
+        DijkstraSearch dijkstra = new DijkstraSearch(graph, v1);
+        System.out.println("Shortest path from A to D: " + dijkstra.pathTo(v4));
+        System.out.println("Distance from A to D: " + dijkstra.distTo(v4));
     }
 }
