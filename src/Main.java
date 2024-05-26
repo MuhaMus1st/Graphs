@@ -1,28 +1,30 @@
 public class Main {
     public static void main(String[] args) {
-        Vertex v1 = new Vertex("A");
-        Vertex v2 = new Vertex("B");
-        Vertex v3 = new Vertex("C");
-        Vertex v4 = new Vertex("D");
+        WeightedGraph<String> graph = new WeightedGraph<>();
 
-        WeightedGraph graph = new WeightedGraph();
-        graph.addVertex(v1);
-        graph.addVertex(v2);
-        graph.addVertex(v3);
-        graph.addVertex(v4);
+        graph.addVertex("A");
+        graph.addVertex("B");
+        graph.addVertex("C");
+        graph.addVertex("D");
+        graph.addVertex("E");
 
-        graph.addEdge(v1, v2, 1);
-        graph.addEdge(v2, v3, 2);
-        graph.addEdge(v3, v4, 3);
-        graph.addEdge(v1, v4, 10);
+        graph.addEdge("A", "B", 1);
+        graph.addEdge("A", "C", 4);
+        graph.addEdge("B", "C", 2);
+        graph.addEdge("B", "D", 5);
+        graph.addEdge("C", "D", 1);
+        graph.addEdge("D", "E", 3);
 
-        System.out.println("Breadth First Search:");
-        BreadthFirstSearch bfs = new BreadthFirstSearch(graph, v1);
-        System.out.println("Path from A to D: " + bfs.pathTo(v4));
+        // BFS
+        BFS<String> bfs = new BFS<>(graph, "A");
+        System.out.println("Breadth First Search Path from A to E: " + bfs.pathTo("E"));
 
-        System.out.println("Dijkstra's Search:");
-        DijkstraSearch dijkstra = new DijkstraSearch(graph, v1);
-        System.out.println("Shortest path from A to D: " + dijkstra.pathTo(v4));
-        System.out.println("Distance from A to D: " + dijkstra.distTo(v4));
+        // Dijkstra
+        DijkstraS<String> dijkstra = new DijkstraS<>(graph, "A");
+        System.out.println("Dijkstra Search Path from A to E: " + dijkstra.pathTo("E"));
+
+
+
+
     }
 }
