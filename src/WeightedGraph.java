@@ -1,25 +1,33 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class WeightedGraph {
-    private final Map<Vertex, List<Edge>> adjacencyList = new HashMap<>();
+public class WeightedGraph<V> {
+    private Map<V, Vertex<V>> vertices;
 
-    public void addVertex(Vertex vertex) {
-        adjacencyList.putIfAbsent(vertex, new ArrayList<>());
+    public WeightedGraph() {
+        this.vertices = new HashMap<>();
     }
 
-    public void addEdge(Vertex source, Vertex destination, double weight) {
-        adjacencyList.get(source).add(new Edge(source, destination, weight));
+    public void addVertex(V data) {
+        vertices.putIfAbsent(data, new Vertex<>(data));
     }
 
-    public List<Edge> getEdges(Vertex vertex) {
-        return adjacencyList.get(vertex);
+    public void addEdge(V sourceData, V destData, double weight) {
+        Vertex<V> source = vertices.get(sourceData);
+        Vertex<V> dest = vertices.get(destData);
+
+        if (source == null || dest == null) {
+            throw new IllegalArgumentException("Both vertices must be part of the graph");
+        }
+
+        source.addAdjacentVertex(dest, weight);
     }
 
-    public Set<Vertex> getVertices() {
-        return adjacencyList.keySet();
+    public Vertex<V> getVertex(V data) {
+        return vertices.get(data);
     }
 
-    public Map<Vertex, List<Edge>> getAdjacencyList() {
-        return adjacencyList;
+    public Map<V, Vertex<V>> getVertices() {
+        return vertices;
     }
 }
