@@ -16,11 +16,11 @@ public class Main {
         graph.addEdge("D", "E", 3);
 
         // BFS
-        BFS<String> bfs = new BFS<>(graph, "A");
+        BreadthFirstSearch<String> bfs = new BreadthFirstSearch<>(graph, "A");
         System.out.println("Breadth First Search Path from A to E: " + bfs.pathTo("E"));
 
         // Dijkstra
-        DijkstraS<String> dijkstra = new DijkstraS<>(graph, "A");
+        DijkstraSearch<String> dijkstra = new DijkstraSearch<>(graph, "A");
         System.out.println("Dijkstra Search Path from A to E: " + dijkstra.pathTo("E"));
 
 
