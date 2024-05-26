@@ -8,12 +8,12 @@ public class Main {
         graph.addVertex("D");
         graph.addVertex("E");
 
-        graph.addEdge("A", "B", 1);
+        graph.addEdge("A", "B", 3);
         graph.addEdge("A", "C", 4);
         graph.addEdge("B", "C", 2);
         graph.addEdge("B", "D", 5);
         graph.addEdge("C", "D", 1);
-        graph.addEdge("D", "E", 3);
+        graph.addEdge("D", "E", 2);
 
         // BFS
         BreadthFirstSearch<String> bfs = new BreadthFirstSearch<>(graph, "A");
