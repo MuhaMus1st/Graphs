@@ -1,57 +1,81 @@
 import java.util.*;
 
-public class DijkstraSearch extends Search {
-    private Map<Vertex, Double> distTo;
-    private PriorityQueue<VertexDistancePair> pq;
+public class DijkstraSearch<V> {
+    private Map<Vertex<V>, Double> distTo;
+    private Map<Vertex<V>, Vertex<V>> edgeTo;
+    private PriorityQueue<VertexDist<V>> pq;
+    private Vertex<V> source;
 
-    public DijkstraSearch(WeightedGraph graph, Vertex start) {
-        super(graph, start);
-        distTo = new HashMap<>();
-        pq = new PriorityQueue<>(Comparator.comparingDouble(VertexDistancePair::getDistance));
-        for (Vertex v : graph.getVertices()) {
+    public DijkstraSearch(WeightedGraph<V> graph, V sourceData) {
+        this.distTo = new HashMap<>();
+        this.edgeTo = new HashMap<>();
+        this.pq = new PriorityQueue<>(Comparator.comparingDouble(VertexDist::getDist));
+        this.source = graph.getVertex(sourceData);
+
+        for (Vertex<V> v : graph.getVertices().values()) {
             distTo.put(v, Double.POSITIVE_INFINITY);
         }
-        distTo.put(start, 0.0);
-        pq.add(new VertexDistancePair(start, 0.0));
+        distTo.put(source, 0.0);
+        pq.add(new VertexDist<>(source, 0.0));
+
         while (!pq.isEmpty()) {
-            VertexDistancePair vdp = pq.poll();
-            Vertex v = vdp.getVertex();
-            for (Edge e : graph.getEdges(v)) {
-                relax(e);
+            Vertex<V> v = pq.poll().getVertex();
+            for (Map.Entry<Vertex<V>, Double> entry : v.getAdjacentVertices().entrySet()) {
+                relax(v, entry.getKey(), entry.getValue());
             }
         }
     }
 
-    private void relax(Edge e) {
-        Vertex v = e.getSource();
-        Vertex w = e.getDestination();
-        if (distTo.get(w) > distTo.get(v) + e.getWeight()) {
-            distTo.put(w, distTo.get(v) + e.getWeight());
+    private void relax(Vertex<V> v, Vertex<V> w, double weight) {
+        if (distTo.get(w) > distTo.get(v) + weight) {
+            distTo.put(w, distTo.get(v) + weight);
             edgeTo.put(w, v);
-            pq.add(new VertexDistancePair(w, distTo.get(w)));
-            visited.put(w, true);
+            pq.add(new VertexDist<>(w, distTo.get(w)));
         }
     }
 
-    public double distTo(Vertex v) {
-        return distTo.getOrDefault(v, Double.POSITIVE_INFINITY);
+    public boolean hasPathTo(V destinationData) {
+        Vertex<V> destination = getVertexByData(destinationData);
+        return distTo.getOrDefault(destination, Double.POSITIVE_INFINITY) < Double.POSITIVE_INFINITY;
     }
 
-    private static class VertexDistancePair {
-        private Vertex vertex;
-        private double distance;
+    public Iterable<V> pathTo(V destinationData) {
+        if (!hasPathTo(destinationData)) return null;
 
-        public VertexDistancePair(Vertex vertex, double distance) {
+        Stack<V> path = new Stack<>();
+        Vertex<V> destination = getVertexByData(destinationData);
+
+        for (Vertex<V> x = destination; x != source; x = edgeTo.get(x)) {
+            path.push(x.getData());
+        }
+        path.push(source.getData());
+        return path;
+    }
+
+    private Vertex<V> getVertexByData(V data) {
+        for (Vertex<V> v : distTo.keySet()) {
+            if (v.getData().equals(data)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    private static class VertexDist<V> {
+        private final Vertex<V> vertex;
+        private final double dist;
+
+        public VertexDist(Vertex<V> vertex, double dist) {
             this.vertex = vertex;
-            this.distance = distance;
+            this.dist = dist;
         }
 
-        public Vertex getVertex() {
+        public Vertex<V> getVertex() {
             return vertex;
         }
 
-        public double getDistance() {
-            return distance;
+        public double getDist() {
+            return dist;
         }
     }
 }
